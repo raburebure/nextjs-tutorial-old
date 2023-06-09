@@ -1,0 +1,19 @@
+1.プロジェクト作成
+npx create-next-app＠13.2.3 プロジェクト名
+
+※@のバージョン指定ではプロジェクト作成方式がそのバージョンになるだけ
+npm remove nextしてから再インストールする必要はある
+
+2.prisma導入
+https://www.prisma.io/
+
+npm install prisma --save-dev
+npm install @prisma/client
+npx prisma init
+
+3.migrate
+https://www.prisma.io/migrate
+npx prisma migrate dev --name init
+
+4.axios
+npm i axios
