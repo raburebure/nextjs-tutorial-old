@@ -17,3 +17,6 @@ npx prisma migrate dev --name init
 
 4.axios
 npm i axios
+
+
+              <button className={styles.deleteButton} onClick={() => handleDelete(post.id)}>

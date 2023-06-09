@@ -11,14 +11,14 @@ type Props = {
 
 // ISR 例：1日ごとに更新
 export async function getStaticProps() {
-  const res = await fetch("http://localhost:3001/api/v1/posts");
-  const posts = await res.json();
+  const res = await axios.get("http://localhost:3000/api/get");
 
-  console.log(posts);
+  const { headers, ...data } = res;
 
+  console.log(data);
   return {
     props: {
-      posts,
+      data,
     },
     revalidate: 60 * 60 * 24,
   };
@@ -27,16 +27,18 @@ export async function getStaticProps() {
 export default function Home({ posts }: Props) {
   const router = useRouter();
 
-  // 投稿を削除する
-  const handleDelete = async (postId: number) => {
-    try {
-      await axios.delete(`/api/v1/posts/${postId}`);
+  console.log(posts);
 
-      router.reload();
-    } catch (err) {
-      alert("削除に失敗しました。");
-    }
-  };
+  // 投稿を削除する
+  //  const handleDelete = async (postId: number) => {
+  //    try {
+  //      await axios.delete(`/api/v1/posts/${postId}`);
+  //
+  //      router.reload();
+  //    } catch (err) {
+  //      alert("削除に失敗しました。");
+  //    }
+  //  };
 
   return (
     <>
@@ -63,9 +65,7 @@ export default function Home({ posts }: Props) {
                 <button className={styles.editButton}>Edit</button>
               </Link>
 
-              <button className={styles.deleteButton} onClick={() => handleDelete(post.id)}>
-                Delete
-              </button>
+              <button className={styles.deleteButton}>Delete</button>
             </div>
           ))}
         </div>
