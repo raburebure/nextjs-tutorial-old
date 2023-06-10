@@ -4,25 +4,22 @@ import { NextApiRequest, NextApiResponse } from "next";
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // アイテムを取得
-  const { id, title, content } = req.body;
+  const { ...reqData } = req.body;
+
+  console.log(reqData);
+
+  if (!reqData) {
+    return res.status(400).json({ message: "投稿内容がありません。" });
+  }
 
   try {
-    // 更新処理
-    const newPost = await prisma.post.update({
-      // 条件
-      where: {
-        id: id,
-      },
-      // 更新内容
+    // テーブルに登録
+    const newPost = await prisma.post.create({
       data: {
-        title: title,
-        content: content,
-        updated_at: new Date(),
+        title: reqData.title,
+        content: reqData.content,
       },
     });
-
-    // 更新結果を返却
     res.status(201).json(newPost);
   } catch (err) {
     console.error(err);

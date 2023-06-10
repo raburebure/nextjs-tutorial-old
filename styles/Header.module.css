@@ -1,0 +1,29 @@
+.headerLayout {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #9d9b9b;
+}
+
+.title {
+  color: black;
+  text-decoration: none;
+}
+
+.createButton {
+  display: inline-block;
+  position: absolute;
+  right: 4%;
+  padding: 10px 30px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.createButton:hover {
+  background-color: #0056b3;
+}

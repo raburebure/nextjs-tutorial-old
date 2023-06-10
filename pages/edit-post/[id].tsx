@@ -1,8 +1,8 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import styles from "../../styles/Home.module.css";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { Post } from "../../types/types";
+import apiClient from "@/lib/apiClient";
 
 type Props = {
   post: Post;
@@ -11,12 +11,18 @@ type Props = {
 export async function getServerSideProps(context: any) {
   const id = context.params.id;
 
-  const res = await fetch(`http://localhost:3001/api/v1/posts/${id}`);
-  const post = await res.json();
+  const res = await apiClient.get("/read", {
+    params: {
+      postId: id,
+    },
+  });
+
+  // ダイナミックルーティング
+  // const res = await apiClient.get(`/read/${id}`);
 
   return {
     props: {
-      post,
+      post: res.data,
     },
   };
 }
@@ -31,7 +37,8 @@ const EditPost = ({ post }: Props) => {
 
     //API
     try {
-      await axios.put(`http://localhost:3001/api/v1/posts/${post.id}`, {
+      await apiClient.put("/update", {
+        id: post.id,
         title: title,
         content: content,
       });

@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import styles from "../styles/Home.module.css";
-import axios from "axios";
 import { useRouter } from "next/router";
+import apiClient from "@/lib/apiClient";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -13,11 +13,12 @@ const CreatePost = () => {
 
     //API
     try {
-      await axios.post("http://localhost:3001/api/v1/posts", {
+      await apiClient.post("/create", {
         title: title,
         content: content,
       });
 
+      // Home に戻る
       router.push("/");
     } catch (err) {
       console.log("投稿に失敗しました");

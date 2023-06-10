@@ -4,19 +4,16 @@ import { NextApiRequest, NextApiResponse } from "next";
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { ...reqData } = req.body;
+  const { id } = req.query;
 
-  console.log(reqData);
-
-  if (!reqData) {
+  if (!id) {
     return res.status(400).json({ message: "投稿内容がありません。" });
   }
 
   try {
-    const newPost = await prisma.post.create({
-      data: {
-        title: reqData.title,
-        content: reqData.content,
+    const newPost = await prisma.post.delete({
+      where: {
+        id: Number(id),
       },
     });
     res.status(201).json(newPost);

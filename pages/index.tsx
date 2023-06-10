@@ -1,9 +1,14 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import { Post } from "@/types/types";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import axios from "axios";
+import apiClient from "@/lib/apiClient";
+
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+}
 
 type Props = {
   posts: Post[];
@@ -11,34 +16,37 @@ type Props = {
 
 // ISR 例：1日ごとに更新
 export async function getStaticProps() {
-  const res = await axios.get("http://localhost:3000/api/get");
+  try {
+    // axiosを使用してデータを取得
+    const res = await apiClient.get("/read-all");
 
-  const { headers, ...data } = res;
-
-  console.log(data);
-  return {
-    props: {
-      data,
-    },
-    revalidate: 60 * 60 * 24,
-  };
+    return {
+      props: {
+        posts: res.data,
+      },
+      revalidate: 60 * 60 * 24,
+    };
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 export default function Home({ posts }: Props) {
   const router = useRouter();
 
-  console.log(posts);
-
   // 投稿を削除する
-  //  const handleDelete = async (postId: number) => {
-  //    try {
-  //      await axios.delete(`/api/v1/posts/${postId}`);
-  //
-  //      router.reload();
-  //    } catch (err) {
-  //      alert("削除に失敗しました。");
-  //    }
-  //  };
+  const handleDelete = async (postId: number) => {
+    try {
+      // axiosを使用してデータを削除
+      const res = await apiClient.delete("/delete", {
+        params: { id: postId },
+      });
+
+      router.reload();
+    } catch (err) {
+      alert("削除に失敗しました。");
+    }
+  };
 
   return (
     <>
@@ -50,10 +58,6 @@ export default function Home({ posts }: Props) {
       </Head>
 
       <div className={styles.homeContainer}>
-        <h2>Next.js Blog</h2>
-        <Link href="/create-post" className={styles.createButton}>
-          Create new post
-        </Link>
         <div>
           {posts.map((post: Post) => (
             <div key={post.id} className={styles.postCard}>
@@ -62,10 +66,12 @@ export default function Home({ posts }: Props) {
               </Link>
               <p>{post.content}</p>
               <Link href={`/edit-post/${post.id}`}>
-                <button className={styles.editButton}>Edit</button>
+                <button className={styles.editButton}>編集</button>
               </Link>
 
-              <button className={styles.deleteButton}>Delete</button>
+              <button className={styles.deleteButton} onClick={() => handleDelete(post.id)}>
+                削除
+              </button>
             </div>
           ))}
         </div>
